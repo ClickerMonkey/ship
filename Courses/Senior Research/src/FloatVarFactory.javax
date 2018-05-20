@@ -1,0 +1,15 @@
+package net.philsprojects.data.var.factory;
+
+import net.philsprojects.data.Store;
+import net.philsprojects.data.Var;
+import net.philsprojects.data.var.FloatVar;
+
+public class FloatVarFactory extends AbstractVarFactory<Float> 
+{
+
+	public Var<Float> create(Store store, int position) 
+	{
+		return new FloatVar(store, position);
+	}
+
+}

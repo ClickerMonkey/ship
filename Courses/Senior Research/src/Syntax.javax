@@ -1,0 +1,88 @@
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+
+
+public class Syntax {
+
+	class ByteSource {
+		public ByteSource wrap(Object ... objs) {
+		}
+	}
+	
+	interface EndPoint {
+	    public SocketAddress getAddress();
+	    public void send(Transmission T);
+	    public void send(ByteBuffer buffer);
+	}
+	interface Service {
+		public SocketAddress getAddress();
+	}
+	interface Protocol<T extends Transmission> {
+		public void setEncoder(Encoder<T> encoder);
+		public void setDecoder(Decoder<T> decoder);
+		public Service listen(SocketAddress address);
+		public EndPoint connect(SocketAddress address);
+	}
+	
+	interface Transmission {
+	    public ByteSource getData();
+	    public EndPoint getEndPoint();
+	}
+	interface TransmissionHandler<T extends Transmission> {
+		public void handle(T transmission);
+	}
+	interface Encoder<T extends Transmission> {
+	    public void encode(T transmission, ByteSource bytes);
+	}
+	interface Decoder<T extends Transmission> {
+	    public T decode(ByteSource bytes);
+	}
+	
+
+	class MyMessage implements Transmission { }
+	class MyEncoder implements Encoder<MyMessage> { }
+	class MyDecoder implements Decoder<MyMessage> { }
+	
+	public static void main(String[] args) 
+	{
+		Protocol<MyMessage> protocol = new TCPProtocol<MyMessage>();
+		protocol.setEncoder(new MyEncoder());
+		protocol.setDecoder(new MyDecoder());
+		
+		TCPService server = protocol.listen(new InetSocketAddress(1234));
+		server.setHandler(new TransmissionHandler<MyMessage>() {
+		    public void handle(MyMessage msg) {
+		    	msg.getEndPoint().send(msg.getData());
+		    }
+		});
+		server.setEndPointListener(new EndPointListener<MyMessage>() {
+			public void onConnect(EndPoint endpoint) {}
+			public void onRecieve(EndPoint endpoint, MyMessage msg) {}
+			public void onSend(EndPoint endpoint, MyMessage msg) {}
+			public void onClose(EndPoint endpoint, Throwable cause) {}
+			public void onError(EndPoint endpoint, Throwable cause) {}
+		});
+		server.start();
+
+		
+		TCPEndPoint client = protocol.connect(new InetSocketAddress("localhost", 1234));
+		client.setHandler(new TransmissionHandler<MyMessage>() {
+			public void handle(MyMessage msg) {
+		        System.out.println(msg.getData());
+			}
+		});
+		client.complete();
+		client.send(ByteSource.wrap(23, "Hello World", 23));
+
+		EndPoint connection = client.connect("host", port);
+		connection.complete();
+		connection.send("Hello World!");
+		
+		
+		
+		
+	}
+	
+	
+}

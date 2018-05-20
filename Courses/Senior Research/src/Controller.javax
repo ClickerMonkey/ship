@@ -1,0 +1,56 @@
+package net.philsprojects.live;
+
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public abstract class Controller<S>
+{
+	private final S subject;
+	private final HashMap<String, Object> properties; 
+	private final AtomicInteger changes;
+	
+	protected Controller(S subject) {
+		this.subject = subject;
+		this.properties = new HashMap<String, Object>();
+		this.changes = new AtomicInteger();
+	}
+
+	public abstract Controller<S> copy(S subject);
+	
+	protected abstract <T> boolean onChange(String name, T newValue, T oldValue);
+	
+	protected abstract <T> boolean onApply();
+	
+	public void apply() {
+		int changeCount = changes.get();
+		if (changeCount > 0) {
+			onApply();
+			changes.addAndGet(-changeCount);
+		}
+	}
+	
+	protected <T> void init(String name, T intialValue) {
+		properties.put(name, intialValue);
+	}
+	
+	public <T> T set(String name, T newValue) {
+		T oldValue = get(name);
+		if (onChange(name, newValue, oldValue)) {
+			properties.put(name, newValue);
+			changes.incrementAndGet();
+		}
+		return oldValue;
+	}
+	
+	public <T> T get(String name) {
+		return (T)properties.get(name);
+	}
+	
+	public S getSubject() {
+		return subject;
+	}
+	
+	
+	
+	
+}

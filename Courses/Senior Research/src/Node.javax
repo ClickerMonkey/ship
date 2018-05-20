@@ -1,0 +1,24 @@
+
+
+@Deprecated
+public class Node<E> {
+
+	public E value;
+	public Node<E> next;
+	public Node<E> prev;
+	
+	public Node<E> appendTo(Node<E> tail) {
+		tail.next = this;
+		prev = tail;
+		return this;
+	}
+	
+	public Node<E> remove() {
+		next.prev = prev;
+		prev.prev = next;
+		next = null;
+		prev = null;
+		return this;
+	}
+	
+}

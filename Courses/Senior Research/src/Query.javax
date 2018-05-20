@@ -1,0 +1,138 @@
+package net.philsprojects.db2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Query {
+
+	private StringBuilder select = new StringBuilder();
+	private StringBuilder from = new StringBuilder();
+	
+	protected StringBuilder query = new StringBuilder();
+	protected List<Object> values = new ArrayList<Object>();
+
+	
+	public Query select(String columns) {
+		if (select.length() != 0) {
+			select.append(',');
+		}
+		select.append(columns);
+		return this;
+	}
+	
+	public Query select(String column, String alias) {
+		if (select.length() != 0) {
+			select.append(',');
+		}
+		select.append(column).append(' ').append(alias);
+		return this;
+	}
+
+	
+	public Query from(String tables) {
+		if (from.length() != 0) {
+			from.append(',');
+		}
+		from.append(tables);
+		return this;
+	}
+	public Query from(String table, String alias) {
+		if (from.length() != 0) {
+			from.append(',');
+		}
+		from.append(table).append(' ').append(alias);
+		return this;
+	}
+	
+	
+	public Join join(String table) {
+		query.append(" JOIN ");
+		return new Join(query, values, table);
+	}
+	public Join join(String table, String withAlias) {
+		query.append(" JOIN ");
+		return new Join(query, values, table, withAlias);
+	}
+	
+	
+	public Join joinInner(String table) {
+		query.append(" INNER JOIN ");
+		return new Join(query, values, table);
+	}
+	public Join joinInner(String table, String withAlias) {
+		query.append(" INNER JOIN ");
+		return new Join(query, values, table, withAlias);
+	}
+	
+	
+	public Join joinLeftOuter(String table) {
+		query.append(" LEFT OUTER JOIN ");
+		return new Join(query, values, table);
+	}
+	public Join joinLeftOuter(String table, String withAlias) {
+		query.append(" LEFT OUTER JOIN ");
+		return new Join(query, values, table, withAlias);
+	}
+	
+	
+	public Join joinRightOuter(String table) {
+		query.append(" RIGHT OUTER JOIN ");
+		return new Join(query, values, table);
+	}
+	public Join joinRightOuter(String table, String withAlias) {
+		query.append(" RIGHT OUTER JOIN ");
+		return new Join(query, values, table, withAlias);
+	}
+	
+	
+	public Join joinFullOuter(String table) {
+		query.append(" FULL OUTER JOIN ");
+		return new Join(query, values, " LEFT OUTER JOIN ", table);
+	}
+	public Join joinFullOuter(String table, String withAlias) {
+		query.append(" FULL OUTER JOIN ");
+		return new Join(query, values, table, withAlias);
+	}
+	
+	
+	public Condition where(String sql) {
+		query.append(" WHERE ");
+		return new Condition(query, values, sql);
+	}
+	public Condition where(String columnAndOperator, Object value) {
+		query.append(" WHERE ");
+		return new Condition(query, values, columnAndOperator, value);
+	}
+	public Condition where(String columnAndOperator, Query subQuery) {
+		query.append(" WHERE ");
+		return new Condition(query, values, columnAndOperator, subQuery);
+	}
+	public Condition where(Condition condition) {
+		query.append(" WHERE ");
+		return new Condition(query, values, condition);
+	}
+
+	// groupBy
+	
+	// having
+	
+	// orderBy
+	
+	// union
+	
+	// limit (FETCH FIRST)
+	
+	// read-only (FOR READ ONLY,  FOR FETCH ONLY)
+	
+	// optimize for (FOR UPDATE OF, OPTIMIZE FOR)
+	
+	// isolation (WITH)
+	
+	// queryno (QUERYNO)
+	
+	public String toString() {
+		return "SELECT " + select + " FROM " + from + query;
+	}
+
+	
+}

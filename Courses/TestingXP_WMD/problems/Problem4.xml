@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><problem><question><text val="Integer Question #2"/><newline/><text val="If you roll 4 die with a total of 20 points, what is your"/><text val="average roll per die?"/></question><answer><integer int="5"/><text val="points per die"/></answer></problem>

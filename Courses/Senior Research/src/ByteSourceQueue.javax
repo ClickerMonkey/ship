@@ -1,0 +1,126 @@
+package net.philsprojects.io.bytes;
+
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
+
+import net.philsprojects.io.buffer.BufferFactory;
+
+public class ByteSourceQueue implements ByteSource {
+
+	private class ByteChunk {
+		private ByteBuffer data;
+		private ByteChunk next;
+//		private boolean valid;
+		public ByteChunk(ByteBuffer data) {
+			this.data = data;
+		}
+	}
+	
+	private ByteSourceQueue parent;
+	private BufferFactory factory;
+	private int size;
+	private int readOffset;
+	private int writeOffset;
+	private ByteChunk head;
+	private ByteChunk tail;
+	
+	public ByteSourceQueue() {
+		
+	}
+	
+	@Override
+	public int getb() {
+		int b = (head.data.get(readOffset++) & 0xFF);
+		if (readOffset == head.data.limit()) {
+			head = remove(head);
+			readOffset = 0;
+		}
+		size--;
+		return b;
+	}
+
+	@Override
+	public void putb(int b) {
+		if (writeOffset == tail.data.limit()) {
+			tail.next = new ByteChunk(factory.allocate());
+			tail = tail.next;
+			writeOffset = 0;
+		}
+		tail.data.put(writeOffset++, (byte)b);
+		size++;
+	}
+
+	@Override
+	public int size() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public BufferFactory getFactory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setFactory(BufferFactory factory) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ByteSource view() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sync() {
+		if (parent != null) {
+			while (parent.head != head) {
+				size -= parent.head.data.limit();
+				parent.head = remove(parent.head);
+			}
+			size -= readOffset;
+			parent.readOffset = readOffset;
+		}
+	}
+	
+	private ByteChunk remove(ByteChunk chunk) {
+		factory.free(chunk.data);
+		chunk.data = null;
+		return chunk.next;
+	}
+
+	@Override
+	public void prepareRead(int bytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void prepareWrite(int bytes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int drain(WritableByteChannel channel) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int fill(ReadableByteChannel channel) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

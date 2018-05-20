@@ -1,0 +1,46 @@
+package net.philsprojects.db2;
+
+import java.util.List;
+
+public class Join 
+{
+
+	private StringBuilder query;
+	private List<Object> values;
+
+	
+	
+	protected Join(StringBuilder query, List<Object> values, String table, String withAlias) {
+		this.query = query;
+		this.values = values;
+		this.query.append(table).append(" ").append(withAlias);
+	}
+	
+	protected Join(StringBuilder query, List<Object> values, String table) {
+		this.query = query;
+		this.values = values;
+		this.query.append(table);
+	}
+	
+	
+	public Condition on(String sql) {
+		query.append(" ON ");
+		return new Condition(query, values, sql);
+	}
+	
+	public Condition on(String columnAndOperator, Object value) {
+		query.append(" ON ");
+		return new Condition(query, values, columnAndOperator, value);
+	}
+	
+	public Condition on(String columnAndOperator, Query subQuery) {
+		query.append(" ON ");
+		return new Condition(query, values, columnAndOperator, subQuery);
+	}
+	
+	public Condition on(Condition condition) {
+		query.append(" ON ");
+		return new Condition(query, values, condition);
+	}
+	
+}

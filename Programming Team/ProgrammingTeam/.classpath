@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="Ship Reference"/>
+	<classpathentry kind="src" path="Weekly Contest"/>
+	<classpathentry kind="src" path="Highschool 2010"/>
+	<classpathentry kind="src" path="Game Competition"/>
+	<classpathentry kind="src" path="Game Competition Test"/>
+	<classpathentry kind="src" path="Bruckart"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

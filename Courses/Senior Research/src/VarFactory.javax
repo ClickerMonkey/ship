@@ -1,0 +1,9 @@
+package net.philsprojects.data;
+
+
+public interface VarFactory<E> 
+{
+	public Var<E> create(E value);
+	public Var<E> create(Store store, int position);
+	public Var<E> create(Store store, int position, E value);
+}

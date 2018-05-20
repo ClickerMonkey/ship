@@ -1,2 +1,7 @@
 *.class
 bin/
+.svn
+doc/
+*.gwt.rpc
+*.dll
+*.jnylib

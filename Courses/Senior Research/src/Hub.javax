@@ -1,0 +1,53 @@
+package net.philsprojects.live;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class Hub 
+{
+
+	
+	private static HashMap<Class<?>, Controller<?>> map;
+	private static List<Controller<?>> controllers;
+	
+	static {
+		map = new HashMap<Class<?>, Controller<?>>();
+		controllers = new ArrayList<Controller<?>>();
+	}
+	
+	public static <T> void register(Controller<T> controller, Class<T> type) 
+	{
+		map.put(type, controller);
+	}
+	
+	public static <T> T create(Class<T> type) 
+	{
+		T subject = null;
+		try {
+			subject = type.newInstance();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		Controller<T> template = (Controller<T>)map.get(type);
+		Controller<T> controller = template.copy(subject);
+		
+		
+		if (template == null) {
+			try {
+				return type.newInstance();	
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		
+		
+		return null;
+	}
+	
+}

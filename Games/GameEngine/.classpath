@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Game Engine Source"/>
+	<classpathentry kind="src" path="Testing"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 [1.7.0_51]"/>
+	<classpathentry kind="lib" path="/Users/phil/Sites/ship/Dependencies/JOGL/1.1.1/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="/Users/phil/Sites/ship/Dependencies/JOGL/jogl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/phil/Sites/ship/Dependencies/JOGL/jogl-natives-macosx-universal"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

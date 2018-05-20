@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><problem><question><text val="Fraction Question #3"/><newline/><text val="What is"/><fraction num="2" den="3"/><text val=" + 2"/><fraction num="1" den="4"/></question><answer><integer int="2"/><fraction num="11" den="12"/></answer></problem>

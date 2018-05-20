@@ -1,0 +1,41 @@
+Finish:
+	add server mode to UdpServer (Client vs Message)
+	handle when acceptors or workers don't exist
+	validate clients accepted by server (onServerValidate?)
+	add Object receive() to client (blocks until next message is received)
+	generalize handle methods in abstract Client and Server
+	better control for UDP/TCP for what makes up a packet
+	
+
+
+logging
+	onLoad
+database 
+	versioning
+	
+	setVersion(0, new DatabaseVersion() {
+		public void onApply(DatabaseFormat format) {
+			format.addColumn("user_id", new TypeKey());
+			format.addColumn("user_name", new TypeString(48));
+			format.addColumn("user_email", new TypeString(64));
+			
+			Column dob = new Column("user_dob", new TypeDate());
+		}
+	});
+	setVersion(1, new DatabaseVersion() {
+		public void onApply(DatabaseFormat format) {
+			format.renameColumn("user_id", "id");
+			format.addColumn("user_alias", new TypeString(32));
+			format.addCheck("user_dob", new CheckCallback<Date>() {
+				public boolean isValid(Date date) {
+					return true;
+				}
+			});
+		}
+	});
+	
+end point 
+	attachments
+application
+statistics
+tasks

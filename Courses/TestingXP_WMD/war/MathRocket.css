@@ -1,0 +1,299 @@
+/** Add css rules here for your application. */
+
+* {
+	margin:0;
+	padding:0;
+}
+
+.questionDisplay {
+	padding:1em;	
+}
+
+.bannerArea {
+	background:url("/Resources/Images/bannerBgImage.png");
+}
+
+.statusBar {
+	background:url("/Resources/Images/statusBarBgImage.png");
+}
+
+.answer
+{
+  border:solid 1px #666;
+  margin:20px 30px;
+  padding:10px;
+}
+
+
+.answer .buttonContainer button
+{
+	margin:1px;
+	padding:4px 8px;
+}
+	
+
+.answerInputContainer
+{
+  padding:8px 5px 16px 5px;
+}
+
+.answer input
+{
+  border:solid 1px #BBB;
+  font-family:monospace;
+  font-size:14px;
+  margin:0px 1px;
+  text-align:center;
+  width:6ex;
+}
+
+.answer .integer input
+{
+  font-size:20px;
+  text-align:right;
+  width:5ex;
+  
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.answer .label input
+{
+  font-family:auto;
+  font-size:16px;
+  text-align:left;
+  
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.answer .fraction
+{
+  border:solid 1px #EEE;
+}
+
+.answer .fraction input
+{
+  font-size:14px;
+  
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.fraction hr
+{
+  margin:1px 0px;
+}
+
+
+.sendButton {
+  display: block;
+  font-size: 16pt;
+}
+
+.add-problem-panel {
+  text-align: right;
+}
+
+/** PROBLEM STATUS BUTTON STYLES **/
+
+.status-right {
+  background: url("/Resources/Images/green.gif");
+}
+.status-wrong {
+  background: url("/Resources/Images/red.gif");
+}
+.status-notries {
+  background: url("/Resources/Images/gray.gif");
+}
+
+.button-panel {
+  width: 60px;
+  height: 60px;
+}
+
+.button-tries {
+  margin-top: -10%;
+  font-size: 40px;
+  font-weight: bold;
+  vertical-align: top;
+  text-align: left;
+  color: #111;
+}
+
+.button-number {
+  margin-top: -40%;
+  font-size: 20px;
+  font-weight: bold;
+  vertical-align: bottom;
+  text-align: right;
+  padding-left: 0px;
+  padding-right: 0px;
+  color: #333;
+}
+
+
+/** LOADING BAR **/
+
+.ajax-loader {
+  width: 200px;
+  height: 19px;
+  background: url("/Resources/Images/ajax-loader.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/** QUESTION PANEL STYLES **/
+
+.text-readonly {
+  vertical-align: middle;
+  display: inline-block;
+  color: #000;
+  font-size: 20px;
+  margin-right: 4px;
+}
+
+.fraction-value {
+  font-size: 14px;
+  color: #000;
+  
+  font-size: 20px;
+}
+
+.add-bar {
+  width: 100%;
+  height: 1px;
+  background-color: #000;	
+}
+
+.fraction {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  margin-right: 4px;
+}
+
+.fraction-box {
+  display: inline-block;
+  vertical-align: middle;
+  
+  font-size: 20px;
+}
+
+.question-panel {
+  width: 100%;
+  
+  display: inline-block;
+  align: center;
+  text-align: center;
+  vertical-align: middle;
+  
+  background-color: #F5F5F5;
+}
+
+.answer-panel {
+  width: 100%;
+  
+  display: inline-block;
+  align: center;
+  text-align: center;
+  vertical-align: middle;
+  
+  background-color: #F5F5F5;
+}
+
+.problem-panel {
+  width: 100%;
+  height: 100%;
+  
+  align: center;
+  text-align: center;
+  vertical-align: middle;
+  
+  background-color: #F0F0F0;
+}
+
+/* PROBLEM DIFFICULTIES */
+
+.levelEasy
+{
+	background:green;
+}
+.levelMedium
+{
+	background:orange;
+}
+.levelHard
+{
+	background:red;
+}
+
+/* LOGIN SCREEN */
+
+.loginPage
+{
+	align:center;
+	text-align:center;
+}
+
+.username-fields
+{
+	padding-top:1%;
+}
+
+.password-fields
+{
+	padding-top:2%;
+}
+
+.login-fields
+{
+	padding-top:2%;
+}
+
+.invalid-login
+{
+	padding-bottom:2%;
+		
+	color:#FF0000;
+	font-size:xx-large;
+}
+
+.username-label
+{
+	font-size:x-large;
+	font-weight:bold;
+
+	color:#FF4500
+}
+
+.username-box
+{
+	font-size:x-large;
+}
+
+.password-label
+{
+	font-size:x-large;
+	font-weight:bold;
+	
+	color:#FF4500;
+}
+
+.password-box
+{
+	font-size:large;
+}
+
+.button-login
+{
+	font-size:large;
+	
+	background-color:#FF8822;
+}
+
+.big_name
+{
+	font-size:20px;
+	font-weight:bold;
+}

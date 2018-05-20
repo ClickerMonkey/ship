@@ -1,0 +1,162 @@
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+
+
+public class Testing {
+
+
+	public interface BufferFactory {
+		public ByteBuffer get(int size);
+		public void free(ByteBuffer buffer);
+		public void drain(List<ByteBuffer> out);
+		public void clear();
+		public int size();
+	}
+
+	public static class ModuleHub {
+		private static List<Module<?>> modules = new ArrayList<Module<?>>();
+		public static void add(Module<?> module) {
+			modules.add(module);
+		}
+	}
+
+	public class ModuleBufferFactory extends Module<BufferFactory> implements BufferFactory {
+
+		public ModuleBufferFactory() {
+			ModuleHub.add(this);
+		}
+
+		public ByteBuffer get(int size) {
+			lock();
+			try {
+				return getStrategy().get(size);
+			} finally {
+				unlock();
+			}
+		}
+		public void drain(List<ByteBuffer> out) {
+			lock();
+			try {
+				getStrategy().drain(out);
+			} finally {
+				unlock();
+			}
+		}
+		public void free(ByteBuffer buffer) {
+			lock();
+			try {
+				getStrategy().free(buffer);
+			} finally {
+				unlock();
+			}
+		}
+		public void clear(){ 
+			lock();
+			try {
+				getStrategy().clear();
+			} finally {
+				unlock();
+			}
+		}
+		public int size() {
+			lock();
+			try {
+				return getStrategy().size();
+			} finally {
+				unlock();
+			}
+		}
+
+		protected void stop(BufferFactory strategy) {
+
+		}
+		protected void transfer(BufferFactory from, BufferFactory to) {
+			List<ByteBuffer> out = new ArrayList<ByteBuffer>(from.size());
+			from.drain(out);
+			for (ByteBuffer b : out) {
+				to.free(b);
+			}
+		}
+		protected void clear(BufferFactory strategy) {
+			strategy.clear();
+		}
+		protected void start(BufferFactory strategy) {
+
+		}
+
+	}
+
+
+	public abstract class Module<T>
+	{
+		private volatile T strategy;
+		private final List<T> strategies;
+		private final WriteLock write;
+		private final ReadLock read;
+
+		public Module() {
+			ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+			this.write = lock.writeLock();
+			this.read = lock.readLock();
+			this.strategies = new ArrayList<T>();
+		}
+		public void setStrategy(T newStrategy) {
+			write.lock();
+
+			this.stop(strategy);
+			this.transfer(strategy, newStrategy);
+			this.clear(strategy);
+			this.start(newStrategy);
+			this.strategy = newStrategy;
+
+			write.unlock();
+		}
+		public void addStrategy(T strategy) {
+			this.strategies.add(strategy);
+		}
+		public List<T> getStrategies() {
+			return strategies;
+		}
+		protected abstract void stop(T strategy);
+		protected abstract void clear(T strategy);
+		protected abstract void start(T strategy);
+		protected abstract void transfer(T from, T to);
+		protected final void lock() {
+			read.lock();
+		}
+		protected final void unlock() {
+			read.unlock();
+		}
+		protected final T getStrategy() {
+			return strategy;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+}
+

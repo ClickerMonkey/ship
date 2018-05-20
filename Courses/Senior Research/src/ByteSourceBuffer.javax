@@ -1,0 +1,170 @@
+package net.philsprojects.io.bytes;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
+
+import net.philsprojects.io.buffer.BufferFactory;
+
+public class ByteSourceBuffer implements ByteSource 
+{
+	public static final int SIZE_VELOCITY = 128;
+	
+	
+	private int read = 0;
+	private int write = 0;
+	private int size = 0;
+	private int limit = 0;
+	private ByteBuffer buffer;
+	private BufferFactory factory;
+	private ByteSourceBuffer parent;
+	
+	protected ByteSourceBuffer(ByteSourceBuffer parent) {
+		this.parent = parent;
+		this.read = parent.read;
+		this.buffer = parent.buffer;
+	}
+	
+	public ByteSourceBuffer(BufferFactory factory) {
+		this.factory = factory;
+		this.buffer = factory.allocate();
+		this.limit = buffer.limit();
+	}
+	
+	@Override
+	public void clear() {
+		read = write = size = 0;
+	}
+	
+	public void prepareWrite(int bytes) {
+		boolean canWrite = (write + bytes <= limit);
+		if (!canWrite) {
+			buffer = factory.resize(buffer, limit + bytes);
+			if (buffer == null) {
+				throw new RuntimeException();
+			}
+			limit = buffer.limit();
+		}
+		size += bytes;
+	}
+	public void prepareRead(int bytes) {
+		boolean canRead = (bytes <= size);
+		if (!canRead) {
+			throw new RuntimeException();
+		}
+		size -= bytes;
+	}
+
+	@Override
+	public int getb() {
+		return buffer.get(read++) & 0xFF;
+	}
+	public short gets() {
+		return buffer.getShort(read+=2);
+	}
+	public int geti() {
+		return buffer.getInt(read+=4);
+	}
+	public long getl() {
+		return buffer.getLong(read+=8);
+	}
+
+	@Override
+	public void putb(int b) {
+		buffer.put(write, (byte)b);
+		write++;
+	}
+
+
+	@Override
+	public int drain(WritableByteChannel channel) 
+	{
+		int drained = 0;
+		int written = 0;
+		
+		buffer.position(read);
+		buffer.limit(write);
+		
+		do {
+			try {
+				written = channel.write(buffer);
+				drained += written;
+				read += written;
+			}
+			catch (IOException e) {
+				break;
+			}
+		} while (written > 0);
+		
+		buffer.position(0);
+		buffer.limit(limit);
+		
+		return drained;
+	}
+
+	@Override
+	public int fill(ReadableByteChannel channel) {
+		
+		int filled = 0;
+		int readed = 0;
+		
+		buffer.position(write);
+		
+		do {
+			try {
+				if (buffer.remaining() == 0) {
+					buffer = factory.resize(buffer, limit + SIZE_VELOCITY);
+					buffer.position(write);
+					limit = buffer.limit();
+				}
+				
+				readed = channel.read(buffer);
+				filled += readed;
+				write += readed;
+			}
+			catch (IOException e) {
+				break;
+			}
+		} while (readed > 0);
+		
+		buffer.position(0);
+		
+		return filled;
+	}
+
+	@Override
+	public BufferFactory getFactory() {
+		return factory;
+	}
+
+
+	@Override
+	public void setFactory(BufferFactory factory) {
+		this.factory = factory;
+	}
+
+	@Override
+	public void sync() {
+		parent.write = write;
+		parent.read = read;
+		parent.size = size;
+		parent.limit = limit;
+		
+		if (parent.buffer != buffer) {
+			factory.free(parent.buffer);
+			parent.buffer = buffer;
+		}
+	}
+
+	@Override
+	public int size() {
+		return size;
+	}
+
+	@Override
+	public ByteSource view() {
+		return new ByteSourceBuffer(this);
+	}
+
+}

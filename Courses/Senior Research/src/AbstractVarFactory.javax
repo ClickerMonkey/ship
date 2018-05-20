@@ -1,0 +1,25 @@
+package net.philsprojects.data.var.factory;
+
+import net.philsprojects.data.Store;
+import net.philsprojects.data.Var;
+import net.philsprojects.data.VarFactory;
+
+
+public abstract class AbstractVarFactory<E> implements VarFactory<E> 
+{
+
+	public Var<E> create(E value) 
+	{
+		return create(null, -1, value);
+	}
+
+	public Var<E> create(Store store, int position, E value) 
+	{
+		Var<E> var = create(store, position);
+		if (value != null) {
+			var.setValue(value);
+		}
+		return var;
+	}
+
+}

@@ -1,0 +1,169 @@
+package net.philsprojects.db2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Condition 
+{
+
+	private StringBuilder query;
+	private List<Object> values;
+
+	public Condition(String sql) {
+		this.query = new StringBuilder();
+		this.values = new ArrayList<Object>();
+		this.append("", sql);
+	}
+	
+	public Condition(String columnAndOperator, Object value) {
+		this.query = new StringBuilder();
+		this.values = new ArrayList<Object>();
+		this.append("", columnAndOperator, value);
+	}
+	
+	public Condition(String columnAndOperator, Query subQuery) {
+		this.query = new StringBuilder();
+		this.values = new ArrayList<Object>();
+		this.append("", columnAndOperator, subQuery);
+	}
+	
+	public Condition(Condition condition) {
+		this.query = new StringBuilder();
+		this.values = new ArrayList<Object>();
+		this.append("", condition);
+	}
+	
+	protected Condition(StringBuilder query, List<Object> values, String sql) {
+		this.query = query;
+		this.values = values;
+		this.append("", sql);
+	}
+	
+	protected Condition(StringBuilder query, List<Object> values, String columnAndOperator, Object value) {
+		this.query = query;
+		this.values = values;
+		this.append("", columnAndOperator, value);
+	}
+	
+	protected Condition(StringBuilder query, List<Object> values, String columnAndOperator, Query subQuery) {
+		this.query = query;
+		this.values = values;
+		this.append("", columnAndOperator, subQuery);
+	}
+	
+	protected Condition(StringBuilder query, List<Object> values, Condition condition) {
+		this.query = query;
+		this.values = values;
+		this.append("", condition);
+	}
+	
+	
+	public Condition and(String sql) {
+		return append(" AND ", sql);
+	}
+	
+	public Condition and(String columnAndOperator, Object value) {
+		return append(" AND ", columnAndOperator, value);
+	}
+	
+	public Condition and(String columnAndOperator, Query subQuery) {
+		return append(" AND ", columnAndOperator, subQuery);
+	}
+	
+	public Condition and(Condition condition) {
+		return append(" AND ", condition);
+	}
+	
+	
+	
+	
+	public Condition or(String sql) {
+		return append(" OR ", sql);
+	}
+	
+	public Condition or(String columnAndOperator, Object value) {
+		return append(" OR ", columnAndOperator, value);
+	}
+	
+	public Condition or(String columnAndOperator, Query subQuery) {
+		return append(" OR ", columnAndOperator, subQuery);
+	}
+	
+	public Condition or(Condition condition) {
+		return append(" OR ", condition);
+	}
+	
+	
+	
+	public Condition xor(String sql) {
+		return append(" XOR ", sql);
+	}
+	
+	public Condition xor(String columnAndOperator, Object value) {
+		return append(" XOR ", columnAndOperator, value);
+	}
+	
+	public Condition xor(String columnAndOperator, Query subQuery) {
+		return append(" XOR ", columnAndOperator, subQuery);
+	}
+	
+	public Condition xor(Condition condition) {
+		return append(" XOR ", condition);
+	}
+	
+	
+	
+	
+	public Condition not(String sql) {
+		return append(" AND NOT ", sql);
+	}
+	
+	public Condition not(String columnAndOperator, Object value) {
+		return append(" AND NOT ", columnAndOperator, value);
+	}
+	
+	public Condition not(String columnAndOperator, Query subQuery) {
+		return append(" AND NOT ", columnAndOperator, subQuery);
+	}
+	
+	public Condition not(Condition condition) {
+		return append(" AND NOT ", condition);
+	}
+	
+	
+	
+	
+	
+	
+	private Condition append(String prepend, String sql) {
+		query.append(prepend).append(sql);
+		return this;
+	}
+	
+	private Condition append(String prepend, String column, Object equalsValue) {
+		query.append(prepend).append(column);
+		values.add(equalsValue);
+		return this;
+	}
+	
+	private Condition append(String prepend, String column, Query subQuery) {
+		query.append(prepend).append(column).append(subQuery);
+		for (Object value : subQuery.values) {
+			values.add(value);
+		}
+		return this;
+	}
+	
+	private Condition append(String prepend, Condition condition) {
+		query.append(prepend).append('(').append(condition).append(')');
+		for (Object value : condition.values) {
+			values.add(value);
+		}
+		return this;
+	}
+	
+	public String toString() {
+		return query.toString();
+	}
+	
+}

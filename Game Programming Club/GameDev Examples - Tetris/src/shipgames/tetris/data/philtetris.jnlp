@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp codebase="http://pdiffenderfer.webs.com/" href="philtetris.jnlp">
+    <security>
+    	<all-permissions />
+    </security>
+    <information>
+        <title>Phil's Tetris</title>
+        <vendor>Philip Diffenderfer</vendor>
+        <homepage href="index.html" />
+        <description>This is a Tetris game created by Philip Diffenderfer for the Shippensburg University Game Programming Club.</description>
+        <offline-allowed />
+    </information>
+    <resources>
+    	<j2se version="1.6+" />
+        <jar href="philtetris.jar" main="true" />
+    </resources>
+    <application-desc main-class="game.tetris.TetrisGame"/>
+</jnlp>

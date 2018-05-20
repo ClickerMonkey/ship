@@ -1,0 +1,47 @@
+package net.philsprojects.io.bytes;
+
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
+
+import net.philsprojects.io.buffer.BufferFactory;
+
+/**
+ * A stream of bytes
+ * 
+ * @author Philip Diffenderfer
+ *
+ */
+public interface ByteSource 
+{
+
+	public int getb();
+	public short gets();
+	public int geti();
+	public long getl();
+	
+	public void putb(int b);
+	public void puts(short b);
+	public void puti(int b);
+	public void putl(long l);
+
+	public void prepareWrite(int bytes);
+	public void prepareRead(int bytes);
+	
+	public int fill(ReadableByteChannel channel);
+	
+	public int drain(WritableByteChannel channel);
+	
+	public int size();
+	
+	public void clear();
+	
+	public ByteSource view();
+	
+	public void sync();
+	
+	
+	public BufferFactory getFactory();
+	
+	public void setFactory(BufferFactory factory);
+	
+}
