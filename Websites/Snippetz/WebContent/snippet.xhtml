@@ -1,0 +1,168 @@
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    template="/template.xhtml">
+	
+	<ui:define name="title">Snippet</ui:define>
+	
+	<ui:define name="content">
+		<h:outputStylesheet library="css" name="codemirror.css" />
+		<h:outputStylesheet library="css" name="themes.css" />
+		<h:outputScript library="js" name="codemirror.js" />
+		<h:outputScript library="js" name="clike.js" />
+		<h:outputScript library="js" name="css.js" />
+		<h:outputScript library="js" name="groovy.js" />
+		<h:outputScript library="js" name="htmlmixed.js" />
+		<h:outputScript library="js" name="javascript.js" />
+		<h:outputScript library="js" name="perl.js" />
+		<h:outputScript library="js" name="php.js" />
+		<h:outputScript library="js" name="plsql.js" />
+		<h:outputScript library="js" name="python.js" />
+		<h:outputScript library="js" name="xml.js" />
+		<h:outputScript library="js" name="xmlpure.js" />
+		
+		<span class="logo">Snippetz</span>
+		
+		<table class="main">
+			<tr>
+				<td id="left">
+					<h:form id="searchForm">	
+					
+						<h1>Query <i> (*=all snippetz)</i></h1>
+						 
+						<p:inputText value="#{SnippetSearch.search}" styleClass="search" id="search" required="true"/>
+						<p:separator />
+						
+						<p:commandButton value="Search" styleClass="searchButton" 
+							update="search,results" actionListener="#{SnippetSearch.doSearch}"/>
+						<p:separator />
+						
+						<p:dataTable var="snippet" value="#{SnippetSearch.searchResults}" id="results" 
+									paginator="true" rows="10">
+							<f:facet name="header">
+								Search Results
+							</f:facet>
+							<p:column>
+								<p:commandButton update="snippetForm" image="ui-icon ui-icon-disk" 
+										style="width:20px; height:20px; float:left;" oncomplete="createEditor()">
+									<f:setPropertyActionListener target="#{Snippet.selected}" value="#{snippet}" />
+								</p:commandButton>
+								<b><h:outputText value="#{snippet.title}" /></b>
+								<i><h:outputText value="#{snippet.description}" /></i>
+							</p:column>
+						</p:dataTable>
+						
+						<p:messages autoUpdate="true" />
+						
+					</h:form>
+				</td>
+				<td id="right">
+					<h:form id="snippetForm">
+					
+						<h:inputHidden value="#{Snippet.selected.id}" />
+					
+						<h1>Title <i> (a unique title, if not unique this will overwrite the existing snippet with the same title)</i></h1>
+						<p:inputText value="#{Snippet.selected.title}" styleClass="title" 
+							required="true" requiredMessage="title required"/>
+						<p:separator />
+						
+						<h1>Description <i> (the meta data this query will be searched by)</i></h1>
+						<p:inputTextarea value="#{Snippet.selected.description}" styleClass="description" 
+							required="true" requiredMessage="description required"/>
+						<p:separator />
+						
+						<h1>Snippet <i> (select the language and theme for the snippet)</i></h1>
+						<p:selectOneMenu value="#{Snippet.selected.mode}" styleClass="mode" onchange="selectMode(this)">
+							<f:selectItem itemLabel="C" itemValue="text/x-csrc" />
+							<f:selectItem itemLabel="C++" itemValue="text/x-c++src" />
+							<f:selectItem itemLabel="Java" itemValue="text/x-java" />
+							<f:selectItem itemLabel="Groovy" itemValue="text/x-groovy" />
+							<f:selectItem itemLabel="Python" itemValue="text/x-python" />
+							<f:selectItem itemLabel="HTML" itemValue="text/html" />
+							<f:selectItem itemLabel="XML" itemValue="application/xml" />
+							<f:selectItem itemLabel="CSS" itemValue="text/css" />
+							<f:selectItem itemLabel="Javascript" itemValue="text/javascript" />
+							<f:selectItem itemLabel="JSON" itemValue="application/json" />
+							<f:selectItem itemLabel="Perl" itemValue="text/x-perl" />
+							<f:selectItem itemLabel="PHP" itemValue="application/x-httpd-php" />
+							<f:selectItem itemLabel="SQL" itemValue="text/x-plsql" />
+						</p:selectOneMenu>
+						&#160;
+						<p:selectOneMenu value="#{Snippet.selected.theme}" styleClass="theme" onchange="selectTheme(this)">
+							<f:selectItem itemLabel="Default" itemValue="default" />
+							<f:selectItem itemLabel="Night" itemValue="night" />
+							<f:selectItem itemLabel="Monokai" itemValue="monokai" />
+							<f:selectItem itemLabel="Neat" itemValue="neat" />
+							<f:selectItem itemLabel="Elegant" itemValue="elegant" />
+							<f:selectItem itemLabel="Cobalt" itemValue="cobalt" />
+							<f:selectItem itemLabel="Eclipse" itemValue="eclipse" />
+							<f:selectItem itemLabel="Rubyblue" itemValue="rubyblue" />
+						</p:selectOneMenu>
+						<br/>
+						
+						<p:inputTextarea styleClass="snippet" id="snippet" value="#{Snippet.selected.snippet}" style="display:none;" />
+						<p:separator />
+						
+						<p:commandButton value="Save" styleClass="saveButton" update="snippetForm" 
+							actionListener="#{Snippet.doSave}" 
+							onstart="copyText()" oncomplete="createEditor()" />
+						
+						<p:commandButton value="Delete" styleClass="deleteButton" update="snippetForm" 
+							actionListener="#{Snippet.doDelete}" oncomplete="createEditor()" />
+						
+						<p:commandButton value="Reset" styleClas="resetButton" update="snippetForm"
+							actionListener="#{Snippet.doReset}" oncomplete="createEditor()" />
+						
+					</h:form>
+				</td>
+			</tr>
+		</table>
+
+		<script>
+			var editor = null;
+			
+			// makes a jquery search and returns the first DOM element found.
+			function getFirst( query ) {
+				return jQuery( query ).get( 0 );
+			}
+			
+			// creates the editor and initializes the mode and theme
+			function createEditor() {
+				editor = CodeMirror.fromTextArea( getFirst('.snippet'), {
+			    	lineNumbers: true,
+			    	mode: "text/x-plsql"
+			    });
+				selectMode( getFirst('.mode select') );
+				selectTheme( getFirst('.theme select') );
+			}
+			
+			// copy editor value into snippet input element
+			function copyText() {
+				$(".snippet").val( editor.getValue() );
+			}
+			
+			// sets the theme of the editor when an option is selected.
+			function selectTheme( node ) {
+				if ( node != null ) {
+					var theme = node.options[ node.selectedIndex ].value;
+					editor.setOption( "theme", theme );	
+				}
+			}
+		 	
+			// sets the mode of the editor when an option is selected.
+		 	function selectMode( node ) {
+				if ( node != null ) {
+					var mode = node.options[ node.selectedIndex ].value;
+					editor.setOption( "mode", mode );
+				}
+			}
+
+			// initialize editor
+			createEditor();
+		</script>
+	</ui:define>
+	
+</ui:composition>

@@ -1,0 +1,55 @@
+body, html { 
+	font: 90% "Trebuchet MS", sans-serif;
+	height: 100%;
+	width: 100%;
+}
+.main, .mainForm {
+	width: 100%;
+}
+.mainForm {
+	border-top: 3px solid #000;	
+}
+#left {
+	width: 300px;
+	background-color: #ddd;
+	padding: 5px;
+	text-align: center;
+}
+#right {
+	background-color: #eee;
+	padding: 10px;
+}
+.search {
+	width: 300px;	
+}
+.ui-dt-c {
+	width: 280px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.unselectable {
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+.title, .description, .snippet  {
+	width: 800px;
+}
+.snippet {
+	font-size: 120%;
+	height: 500px;
+}
+.logo {
+	font-size: 48px; 
+	padding-left: 20px;
+}
+.CodeMirror {
+	border: 1px solid #eee;
+}
+.CodeMirror-scroll {
+	height: auto;
+	overflow-y: hidden;
+	overflow-x: auto;
+	width: 100%;
+}

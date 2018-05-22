@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp>
+
+	<information>
+		<title>Super Duper Mario</title>
+		<vendor>Phils Projects</vendor>
+		<homepage href="http://www.philsprojects.net"/>
+    	<description>A clone of the popular Mario game.</description>
+		<offline-allowed/>
+	</information>
+  
+	<security>
+		<all-permissions/>
+	</security>
+
+	<resources>
+		<j2se version="1.5+" java-vm-args="-XX:+AggressiveOpts -XX:+UseFastAccessorMethods -XX:+DisableExplicitGC -Xnoclassgc -Xincgc -Xmx256m -Xms256m"/>
+		<jar href="mario-web.jar" main="true"/>
+		<extension name="jogl" href="http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.1-rc8/webstart/jogl.jnlp" />
+	</resources>
+  
+	<application-desc main-class="net.philsprojects.mario.Game"/>
+	
+</jnlp>

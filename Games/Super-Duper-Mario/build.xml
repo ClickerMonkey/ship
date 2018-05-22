@@ -1,0 +1,66 @@
+<project name="mario" default="build-web" basedir=".">
+	<description>
+        Super Duper Mario
+    </description>
+	
+	<!-- Set global properties for this build -->
+	<property name="game-src" location="Source"/>
+	<property name="engine-src" location="Game Engine Source"/>
+	<property name="resources" location="Resources"/>
+	<property name="bin" location=".bin"/>
+	<property name="lib" location="libs"/>
+	<property name="build" location="build"/>
+
+	<!-- Prepare the build by creating the appropriate directories. -->
+	<target name="init">
+		<!-- Create the bin directory structure used by compile -->
+		<mkdir dir="${bin}"/>
+	</target>
+
+	<!-- Include all Jars in the library directory. -->
+	<path id="lib-classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<!-- Compiles the game by copying over resources, compiling the game
+		 engine, and finally compiling the game. -->
+	<target name="compile" depends="init" description="compile the source">
+		<copy todir="${bin}">
+			<fileset dir="${resources}"/>
+		</copy>
+		<javac srcdir="${engine-src}" destdir="${bin}" optimize="on">
+			<classpath refid="lib-classpath"/>
+		</javac>
+		<javac srcdir="${game-src}" destdir="${bin}" optimize="on">
+			<classpath refid="lib-classpath"/>
+		</javac>
+	</target>
+
+	<!-- Creates a Jar file from the compiled game. -->
+	<target name="build-web" depends="compile" description="generate the webstart jar" >
+		<!-- Put everything in ${build} into the testility-${version}.jar file -->
+		<jar jarfile="${build}/mario-web.jar" basedir="${bin}" compress="true"/>
+		<signjar jar="${build}/mario-web.jar" alias="philsprojects" keystore="keystore.ks" storepass="philsprojects" />
+	</target>
+
+	<!-- Creates a Jar file from the compiled game. -->
+	<target name="build-runnable" depends="compile" description="generate the runnable jar" >
+		<!-- Put everything in ${build} into the testility-${version}.jar file -->
+		<jar jarfile="${build}/mario.jar" basedir="${bin}" compress="true">
+			<manifest>
+				<attribute name="Main-Class" value="net.philsprojects.mario.Game"/>
+				<attribute name="Class-Path" value="libs/jogl.jar libs/gluegen-rt.jar"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Remove the bin directory and all child directories. -->
+	<target name="clean" description="clean up" >
+		<delete includeEmptyDirs="true">
+			<fileset dir="${bin}"/>
+		</delete>
+	</target>
+	
+</project>

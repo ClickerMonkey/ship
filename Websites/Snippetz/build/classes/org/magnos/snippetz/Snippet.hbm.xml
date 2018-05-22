@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="org.magnos.snippetz.Snippet" table="snippet" schema="public">
+        <id name="id" type="long" column="id">
+            <generator class="identity" />
+        </id>
+        <property name="title" type="java.lang.String" column="title" not-null="true" />
+        <property name="description" type="java.lang.String" column="description" not-null="true" />
+        <property name="snippet" type="java.lang.String" column="snippet" not-null="true" />
+        <property name="theme" type="java.lang.String" column="theme" not-null="true" />
+        <property name="mode" type="java.lang.String" column="mode" not-null="true" />
+    </class>
+    
+    <query name="snippet.all"><![CDATA[
+    	FROM Snippet AS s
+    ]]></query>
+	<query name="snippet.byId"><![CDATA[
+		FROM Snippet AS s WHERE s.id = ?
+	]]></query>
+	<query name="snippet.byTitle"><![CDATA[
+		FROM Snippet AS s WHERE s.title = ?
+	]]></query>
+    
+</hibernate-mapping>
